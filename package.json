@@ -1,0 +1,11 @@
+{
+  "name": "alexa-time-tracker",
+  "description": "This project provides the back-end implementation for the Alexa Time Tracker Skill",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jennproos/alexa-time-tracker.git"
+  },
+  "keywords": ["alexa", "time", "tracker"],
+  "author": "Jenn Proos"
+}
