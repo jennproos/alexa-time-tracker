@@ -1,0 +1,2 @@
+# DynamoDB
+PROJECTS_TABLE_NAME: projects_${{self:provider.stage}}

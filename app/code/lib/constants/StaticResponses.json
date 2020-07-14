@@ -1,0 +1,8 @@
+{
+  "OUTPUTS": {
+    "WELCOME": "Welcome to Time Bot, where you can track your hours and stuff."
+  },
+  "REPROMPTS": {
+    "HELP": "What can I help you with?"
+  }
+}

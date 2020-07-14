@@ -1,0 +1,17 @@
+projects:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: ${{self:provider.environment.PROJECTS_TABLE_NAME}}
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: projectName
+        AttributeType: S
+      - AttributeName: userId
+        AttributeType: S
+    KeySchema:
+      - AttributeName: projectName
+        KeyType: HASH
+      - AttributeName: userId
+        KeyType: RANGE
+    PointInTimeRecoverySpecification:
+      PointInTimeRecoveryEnabled: true

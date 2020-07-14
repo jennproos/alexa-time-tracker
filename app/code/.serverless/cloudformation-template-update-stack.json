@@ -1,0 +1,174 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "The AWS CloudFormation template for this Serverless application",
+  "Resources": {
+    "TimeTrackerSkillHandlerLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/time-tracker-code-dev-timeTrackerSkillHandler",
+        "RetentionInDays": 90
+      }
+    },
+    "IamRoleLambdaExecution": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "dev",
+                  "time-tracker-code",
+                  "lambda"
+                ]
+              ]
+            },
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/time-tracker-code-dev*:*"
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/time-tracker-code-dev*:*:*"
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "xray:PutTraceSegments",
+                    "xray:PutTelemetryRecords"
+                  ],
+                  "Resource": "*"
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:Query",
+                    "dynamodb:PutItem"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Join": [
+                        ":",
+                        [
+                          "arn",
+                          {
+                            "Ref": "AWS::Partition"
+                          },
+                          "dynamodb",
+                          {
+                            "Ref": "AWS::Region"
+                          },
+                          {
+                            "Ref": "AWS::AccountId"
+                          },
+                          "table/projects_dev"
+                        ]
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "Path": "/",
+        "RoleName": {
+          "Fn::Join": [
+            "-",
+            [
+              "time-tracker-code",
+              "dev",
+              {
+                "Ref": "AWS::Region"
+              },
+              "lambdaRole"
+            ]
+          ]
+        }
+      }
+    },
+    "TimeTrackerSkillHandlerLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": "time-tracker-deployment-dev",
+          "S3Key": "serverless/time-tracker-code/dev/1594656097876-2020-07-13T16:01:37.876Z/time-tracker-code.zip"
+        },
+        "FunctionName": "time-tracker-code-dev-timeTrackerSkillHandler",
+        "Handler": "handler.handleAlexaEvent",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 30,
+        "Description": "Event handler for the Time Tracker Alexa Skill",
+        "Environment": {
+          "Variables": {
+            "PROJECTS_TABLE_NAME": "projects_dev"
+          }
+        }
+      },
+      "DependsOn": [
+        "TimeTrackerSkillHandlerLogGroup",
+        "IamRoleLambdaExecution"
+      ]
+    },
+    "alexaCustomSkillLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "EventSourceToken": "amzn1.ask.skill.f12a65eb-7109-4b8c-a466-b3b3fbb4ab74",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "TimeTrackerSkillHandlerLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Principal": "alexa-appkit.amazon.com"
+      }
+    }
+  },
+  "Outputs": {
+    "ServerlessDeploymentBucketName": {
+      "Value": "time-tracker-deployment-dev"
+    }
+  }
+}

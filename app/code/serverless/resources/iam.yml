@@ -1,0 +1,10 @@
+alexaCustomSkillLambdaInvokePermission:
+  Type: AWS::Lambda::Permission
+  Properties:
+    Action: lambda:InvokeFunction
+    EventSourceToken: ${{self:custom.customSkillId}}
+    FunctionName:
+      Fn::GetAtt:
+        - "TimeTrackerSkillHandlerLambdaFunction"
+        - "Arn"
+    Principal: alexa-appkit.amazon.com

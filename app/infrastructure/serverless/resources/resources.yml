@@ -1,0 +1,9 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  # Cognito
+  timeBotUserPool: ${{file(serverless/resources/cognito.yml):timeBotUserPool}}
+  timeBotUserPoolDomain: ${{file(serverless/resources/cognito.yml):timeBotUserPoolDomain}}
+  timeBotUserPoolAppClient: ${{file(serverless/resources/cognito.yml):timeBotUserPoolAppClient}}
+
+  # DynamoDB
+  projectsTable: ${{file(serverless/resources/tables.yml):projects}}

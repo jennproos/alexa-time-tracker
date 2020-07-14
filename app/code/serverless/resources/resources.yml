@@ -1,0 +1,4 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  # IAM
+  alexaCustomSkillLambdaInvokePermission: ${{file(serverless/resources/iam.yml):alexaCustomSkillLambdaInvokePermission}}

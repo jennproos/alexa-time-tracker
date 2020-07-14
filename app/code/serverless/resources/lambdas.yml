@@ -1,0 +1,3 @@
+timeTrackerSkillHandler:
+  handler: handler.handleAlexaEvent
+  description: Event handler for the Time Tracker Alexa Skill

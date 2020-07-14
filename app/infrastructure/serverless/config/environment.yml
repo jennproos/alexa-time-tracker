@@ -1,0 +1,6 @@
+# Cognito
+TIME_BOT_USER_POOL_NAME: time_bot_users_${{self:provider.stage}}
+TIME_BOT_APP_CLIENT_NAME: time_bot_alexa_skill_client_${{self:provider.stage}}
+
+# DynamoDB
+PROJECTS_TABLE_NAME: projects_${{self:provider.stage}}
